@@ -29,18 +29,23 @@ mstring ms_from(char *s, int own) {
 size_t ms_split(mstring s, char deli, mstring **ss) {
 	size_t counter = 0;
 	for (size_t i = 0; i < s.len; ++i) {
-		if (s.s[i] == deli)	counter++;
+		if (s.s[i] == deli) counter++;
 	}
 
 	*ss = (mstring *) malloc(++counter * sizeof(mstring));
 	size_t pos = 0;
 	counter = 0;
 	for (size_t i = 0; i < s.len; ++i) {
-		if (s.s[i] == deli)	{
+		if (s.s[i] == deli) {
 			mstring ms = {.s = s.s + pos, .len = i - pos, .cap = 0, .own = false};
 			(*ss)[counter++] = ms;
 			pos = i + 1;
 		}
+	}
+
+	if (pos <= s.len) {
+		mstring ms = {.s = s.s + pos, .len = s.len - pos, .cap = 0, .own = false};
+		(*ss)[counter++] = ms;
 	}
 
 	return counter;
@@ -69,4 +74,14 @@ mstring ms_merge(mstring ms1, mstring ms2) {
 	ms_destroy(ms1);
 	ms_destroy(ms2);
 	return merged;
+}
+
+mstring ms_borrow_copy(mstring ori) {
+	mstring ms = {.s = ori.s, .len = ori.len, .cap = 0, .own = false};
+	return ms;
+}
+
+mstring ms_own_copy(mstring ori) {
+	mstring ms = {.s = strndup(ori.s, ori.len), .len = ori.len, .cap = ori.len + 1, .own = true};
+	return ms;
 }

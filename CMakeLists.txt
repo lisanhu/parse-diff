@@ -7,7 +7,7 @@ add_subdirectory(mlog)
 
 add_library(mstring mstring.c)
 
-add_executable(parse_diff main.c)
+add_executable(parse_diff main.c logic.c)
 target_link_libraries(parse_diff mstring mlog)
 
 

@@ -5,12 +5,12 @@
 #ifndef PARSE_DIFF_MSTRING_H
 #define PARSE_DIFF_MSTRING_H
 
+#include <stdlib.h>
+#include <stdbool.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdlib.h>
-#include <stdbool.h>
 
 typedef struct mstring {
 	int  cap, len;
@@ -54,6 +54,10 @@ int ms_to_cstr(char *dest, mstring ms);
  * @return mstring object with ms1 as head, and ms2 as tail
  */
 mstring ms_merge(mstring ms1, mstring ms2);
+
+mstring ms_borrow_copy(mstring ori);
+
+mstring ms_own_copy(mstring ori);
 
 #ifdef __cplusplus
 };
