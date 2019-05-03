@@ -4,7 +4,7 @@
 
 #include <cstring>
 #include "catch.hpp"
-#include "../mstring.h"
+#include "mstring.h"
 
 TEST_CASE("no delimiter", "[mstring] [ms_split]") {
 	const char *s = "ref|NC_001133|-38543"

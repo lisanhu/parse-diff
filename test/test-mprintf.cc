@@ -4,8 +4,8 @@
 
 #include <cstring>
 #include "catch.hpp"
-#include "../mstring.h"
-#include "../mprintf.h"
+#include "mstring.h"
+#include "mprintf.h"
 
 
 TEST_CASE("testing string_slice_replace", "[.mprintf][.string_slice_replace]") {

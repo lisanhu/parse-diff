@@ -11,6 +11,4 @@ add_executable(parse_diff main.c logic.c)
 target_link_libraries(parse_diff mstring mlog)
 
 
-set(TESTS_SRC tests/sample.cc tests/test-mstring.cc)
-add_executable(tests tests/test-main.cc ${TESTS_SRC})
-target_link_libraries(tests mstring)
+add_subdirectory(test)
