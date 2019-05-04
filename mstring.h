@@ -24,7 +24,7 @@ mstring ms_own(const char *s, int l);
 mstring ms_from(char *s, int own);
 
 void ms_destroy(mstring s);
-bool ms_start_with(mstring s);
+bool ms_start_with(mstring s, char c);
 
 /**
  * Split an mstring object using a char delimiter, will store the sub-strings in parameter __ss__.

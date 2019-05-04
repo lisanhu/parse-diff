@@ -85,3 +85,10 @@ mstring ms_own_copy(mstring ori) {
 	mstring ms = {.s = strndup(ori.s, ori.len), .len = ori.len, .cap = ori.len + 1, .own = true};
 	return ms;
 }
+
+bool ms_start_with(mstring s, char c) {
+	if (s.len > 0 && s.s[0] == c) {
+		return true;
+	}
+	return false;
+}

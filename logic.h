@@ -11,15 +11,11 @@
 extern "C" {
 #endif
 
-typedef struct line_parse_item {
-	mstring str;
-	/// when the str is definitely a full line, valid is true
-	/// ow, valid is false
-	char valid;
-} line_parse_item;
+typedef struct parse_result {
+	size_t missed, redundant, wrong;
+} p_result;
 
-
-size_t parse_block(const char *content, size_t block_size, line_parse_item **items);
+p_result parse_full_text(const char *text, int length, int truth_pos);
 
 
 #ifdef __cplusplus

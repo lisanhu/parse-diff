@@ -8,6 +8,17 @@
 #define try_free(x) if ((x) != NULL) { free((x)); (x) = NULL; }
 
 
+typedef struct line_parse_item {
+	mstring str;
+	/// when the str is definitely a full line, valid is true
+	/// ow, valid is false
+	char valid;
+} line_parse_item;
+
+
+size_t parse_block(const char *content, size_t length, line_parse_item **items);
+
+
 typedef struct line_parse_item_array {
 	line_parse_item *store;
 	size_t len, cap;
@@ -20,21 +31,20 @@ static void lpia_destroy(lpi_array arr);
 static void lpia_push(lpi_array arr, line_parse_item item);
 
 
-size_t parse_block(const char *content, size_t block_size, line_parse_item **items) {
-	mstring bcontent = ms_borrow((char *) content, block_size);
-	mstring *lines;
-	size_t l = ms_split(bcontent, '\n', &lines);
+size_t parse_block(const char *content, size_t length, line_parse_item **items) {
+//	int state = 0;
+//	size_t start = 0, cur = 0;
+//
+//	for (int i = 0; i < length; ++i) {
+//		if (i + 1 < length && content[i] == '\n' && content[i + 1] )
+//	}
 
-	if (l < 2) {
+	//todo to be implemented for parallel processing
 
-	}
-
-	for (int i = 0; i < block_size; ++i) {
-
-	}
-	ms_destroy(bcontent);
 	return 0;
 }
+
+
 
 lpi_array new_lpi_array() {
 	const size_t cap = 100;
@@ -60,3 +70,50 @@ void lpia_push(lpi_array arr, line_parse_item item) {
 
 #undef try_free
 #endif
+
+p_result parse_full_text(const char *text, int length, int truth_pos) {
+	p_result result = {.missed = 0, .redundant = 0, .wrong = 0};
+	char in_truth = "<>"[truth_pos];
+	char in_compared = "><"[truth_pos];
+
+	mstring ms = ms_borrow((char *) text, length);
+	mstring *lines;
+	size_t num_lines = ms_split(ms, '\n', &lines);
+
+	char begin = false, intruth = false, incompared = false;
+
+	for (size_t i = 0; i < num_lines; ++i) {
+		if (!ms_start_with(lines[i], '>') && !ms_start_with(lines[i], '<')) {
+			if (intruth && incompared) {
+				result.wrong++;
+			} else if (intruth && !incompared) {
+				result.missed++;
+			} else if (!intruth && incompared) {
+				result.redundant++;
+			}
+			begin = true;
+			intruth = false;
+			incompared = false;
+		} else if (ms_start_with(lines[i], in_truth)) {
+			intruth = true;
+			begin = false;
+		} else if (ms_start_with(lines[i], in_compared)) {
+			incompared = true;
+			begin = false;
+		}
+	}
+
+	if (!begin) {
+		if (intruth && incompared) {
+			result.wrong++;
+		} else if (intruth && !incompared) {
+			result.missed++;
+		} else if (!intruth && incompared) {
+			result.redundant++;
+		}
+	}
+
+	ms_destroy(ms);
+
+	return result;
+}
